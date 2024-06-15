@@ -15,72 +15,150 @@ document.addEventListener('DOMContentLoaded', ()=>{
         dialog.close();
     });
 
+// Using the class
 
-    let  myLibrary = [];
-
-    function Book(title, author, pages, read){
-        this.title = title;
-        this.author = author;
-        this.pages = pages;
-        this.read = read;
+    class Book{
+        constructor(title, author, pages, read){
+            this.title = title;
+            this.author = author;
+            this.pages = pages;
+            this.read = read;
+        }
     }
 
-    function addBookToLibrary(title, author, pages, read){
-        let book = new Book(title, author, pages, read);
-        myLibrary.push(book);
-        displayBooks();
-    }
+    class Library{
+        constructor(){
+            this.myLibrary = [];
+        }
 
-    // Form submission event listener
-    form.addEventListener("submit", (event) => {
-        event.preventDefault(); // Prevent form from submitting normally
-        const title = document.querySelector("#title").value;
-        const author = document.querySelector("#author").value;
-        const pages = document.querySelector("#pages").value;
-        const read = document.querySelector("#read").checked;
-        addBookToLibrary(title, author, pages, read);
-        dialog.close(); // Close the dialog after adding the book
-        form.reset(); // Reset the form after adding the book
-    });
+        addBookToLibrary(title, author, pages, read) {
+            const book = new Book(title, author, pages, read);
+            this.myLibrary.push(book);
+            this.displayBooks();
+        }
 
-    function displayBooks(){
-        const bookContainer = document.querySelector("#book-container");
-        bookContainer.innerHTML = "";
-        myLibrary.forEach((book, index) => {
-            const bookCard = document.createElement("div");
-            bookCard.classList.add("book-card");
-            bookCard.dataset.index = index;
-            bookCard.innerHTML = `
+        displayBooks(){
+            const bookContainer = document.querySelector("#book-container");
+            bookContainer.innerHTML = "";
+            this.myLibrary.forEach((book, index) => {
+                const bookCard = document.createElement("div");
+                bookCard.classList.add("book-card");
+                bookCard.dataset.index = index;
+                bookCard.innerHTML = `
                 <h2>Title: ${book.title}</h2>
                 <h3>Author: ${book.author}</h3>
                 <p>Pages: ${book.pages} pages</p>
                 <button type="button" class="read-status btn btn-outline-info">${book.read ? "Read" : "Not Read"}</button>
                 <button type="button" class="delete-book btn btn-outline-danger">Delete</button>
             `;
-            bookContainer.appendChild(bookCard);
+                bookContainer.appendChild(bookCard);
 
-            // Add event listener for the read status button
-            const readStatusButton = bookCard.querySelector(".read-status");
-            readStatusButton.addEventListener("click", () => {
-                toggleReadStatus(index);
+                // Add event listener for the read status button
+                const readStatusButton = bookCard.querySelector(".read-status");
+                readStatusButton.addEventListener("click", () => {
+                    this.toggleReadStatus(index);
+                });
+
+                // Add event listener for the delete button
+                const deleteButton = bookCard.querySelector(".delete-book");
+                deleteButton.addEventListener("click", () => {
+                    this.deleteBook(index);
+                });
             });
-
-            // Add event listener for the delete button
-            const deleteButton = bookCard.querySelector(".delete-book");
-            deleteButton.addEventListener("click", () => {
-                deleteBook(index);
-            });
-        });
-
-        function toggleReadStatus(index) {
-            myLibrary[index].read = !myLibrary[index].read;
-            displayBooks();
         }
 
-        function deleteBook(index) {
-            myLibrary.splice(index, 1);
-            displayBooks();
+        toggleReadStatus(index) {
+            this.myLibrary[index].read = !this.myLibrary[index].read;
+            this.displayBooks();
         }
+
+        deleteBook(index) {
+            this.myLibrary.splice(index, 1);
+            this.displayBooks();
+        }
+
     }
+
+    const library = new Library();
+
+    form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const title = document.querySelector("#title").value;
+        const author = document.querySelector("#author").value;
+        const pages = document.querySelector("#pages").value;
+        const read = document.querySelector("#read").checked;
+        library.addBookToLibrary(title, author, pages, read);
+        dialog.close();
+        form.reset();
+    });
+
+
+// With out using the class
+    // let  myLibrary = [];
+
+    // function Book(title, author, pages, read){
+    //     this.title = title;
+    //     this.author = author;
+    //     this.pages = pages;
+    //     this.read = read;
+    // }
+
+    // function addBookToLibrary(title, author, pages, read){
+    //     let book = new Book(title, author, pages, read);
+    //     myLibrary.push(book);
+    //     displayBooks();
+    // }
+
+    // // Form submission event listener
+    // form.addEventListener("submit", (event) => {
+    //     event.preventDefault(); // Prevent form from submitting normally
+    //     const title = document.querySelector("#title").value;
+    //     const author = document.querySelector("#author").value;
+    //     const pages = document.querySelector("#pages").value;
+    //     const read = document.querySelector("#read").checked;
+    //     addBookToLibrary(title, author, pages, read);
+    //     dialog.close(); // Close the dialog after adding the book
+    //     form.reset(); // Reset the form after adding the book
+    // });
+
+    // function displayBooks(){
+    //     const bookContainer = document.querySelector("#book-container");
+    //     bookContainer.innerHTML = "";
+    //     myLibrary.forEach((book, index) => {
+    //         const bookCard = document.createElement("div");
+    //         bookCard.classList.add("book-card");
+    //         bookCard.dataset.index = index;
+    //         bookCard.innerHTML = `
+    //             <h2>Title: ${book.title}</h2>
+    //             <h3>Author: ${book.author}</h3>
+    //             <p>Pages: ${book.pages} pages</p>
+    //             <button type="button" class="read-status btn btn-outline-info">${book.read ? "Read" : "Not Read"}</button>
+    //             <button type="button" class="delete-book btn btn-outline-danger">Delete</button>
+    //         `;
+    //         bookContainer.appendChild(bookCard);
+
+    //         // Add event listener for the read status button
+    //         const readStatusButton = bookCard.querySelector(".read-status");
+    //         readStatusButton.addEventListener("click", () => {
+    //             toggleReadStatus(index);
+    //         });
+
+    //         // Add event listener for the delete button
+    //         const deleteButton = bookCard.querySelector(".delete-book");
+    //         deleteButton.addEventListener("click", () => {
+    //             deleteBook(index);
+    //         });
+    //     });
+
+    //     function toggleReadStatus(index) {
+    //         myLibrary[index].read = !myLibrary[index].read;
+    //         displayBooks();
+    //     }
+
+    //     function deleteBook(index) {
+    //         myLibrary.splice(index, 1);
+    //         displayBooks();
+    //     }
+    // }
 
 });
